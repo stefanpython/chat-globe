@@ -24,7 +24,7 @@ function App() {
     <div>
       {room ? (
         <div>
-          <Chat />
+          <Chat room={room} />
         </div>
       ) : (
         <div className="room">
