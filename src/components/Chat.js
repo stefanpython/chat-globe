@@ -6,6 +6,7 @@ import {
   onSnapshot,
   query,
   where,
+  orderBy,
 } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import { uid } from "uid";
@@ -19,14 +20,20 @@ export const Chat = (props) => {
 
   // Listen for new messages with onSnapShoot()
   useEffect(() => {
-    const queryMessages = query(messageRef, where("room", "==", room));
-    onSnapshot(queryMessages, (snapshot) => {
+    const queryMessages = query(
+      messageRef,
+      where("room", "==", room),
+      orderBy("created", "asc")
+    );
+    const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
       let messages = [];
       snapshot.forEach((doc) => {
         messages.push({ ...doc.data() });
       });
       setMessages(messages);
     });
+
+    return () => unsubscribe();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -47,9 +54,12 @@ export const Chat = (props) => {
 
   return (
     <div className="chat--container">
+      <div className="chat--header">
+        <h1>Welcome to: {room.toUpperCase()}</h1>
+      </div>
       <div>
         {messages.map((message) => (
-          <h1>{message.text}</h1>
+          <h1 key={message.id}>{message.text}</h1>
         ))}
       </div>
       <form onSubmit={handleSubmit} className="new--message">
