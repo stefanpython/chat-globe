@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-// Import getAuth for all types login and GoogleAuthProvider for login with gmail
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth"; // Import getAuth for all types login and GoogleAuthProvider for login with gmail
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBcMy5qIpuIeNLPmWpXv6Nbak3-mVLwhzo",
@@ -12,6 +12,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-// Create variable and assign it with GoogleAuthProvider() for gmail login
-export const googleProvider = new GoogleAuthProvider();
+export const auth = getAuth(app); // Create variable and assign it with GoogleAuthProvider() for gmail login
+export const googleProvider = new GoogleAuthProvider(); // Add google gmail provider
+export const db = getFirestore(app); // Variable for database
