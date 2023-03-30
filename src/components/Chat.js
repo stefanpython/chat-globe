@@ -8,20 +8,26 @@ import {
   where,
 } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
+import { uid } from "uid";
 
 export const Chat = (props) => {
   const { room } = props;
   const [newMessage, setNewMessage] = useState("");
+  const [messages, setMessages] = useState([]);
 
   const messageRef = collection(db, "messages"); // Reference which firestore database collection
 
-  // Listen for new messages
+  // Listen for new messages with onSnapShoot()
   useEffect(() => {
     const queryMessages = query(messageRef, where("room", "==", room));
     onSnapshot(queryMessages, (snapshot) => {
-      console.log("IT WORKS NEW MESSAGE");
+      let messages = [];
+      snapshot.forEach((doc) => {
+        messages.push({ ...doc.data() });
+      });
+      setMessages(messages);
     });
-  });
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +39,7 @@ export const Chat = (props) => {
       created: serverTimestamp(),
       user: auth.currentUser.displayName,
       room: room,
+      id: uid(),
     });
 
     setNewMessage("");
@@ -40,6 +47,11 @@ export const Chat = (props) => {
 
   return (
     <div className="chat--container">
+      <div>
+        {messages.map((message) => (
+          <h1>{message.text}</h1>
+        ))}
+      </div>
       <form onSubmit={handleSubmit} className="new--message">
         <input
           onChange={(e) => setNewMessage(e.target.value)}
