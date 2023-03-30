@@ -3,13 +3,18 @@ import { useState } from "react";
 import { auth, googleProvider } from "../config/firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
 
-export const Auth = () => {
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
+
+export const Auth = (props) => {
   console.log(auth?.currentUser?.email);
 
   // Sign in with google account
   const signInWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      cookies.set("auth-token", result.user.refreshToken);
+      props.setIsAuth(true); // Redirect user to chat room after login
     } catch (err) {
       console.error(err);
     }
@@ -24,11 +29,12 @@ export const Auth = () => {
   };
 
   return (
-    <div>
+    <div className="auth">
       <br />
 
       <button onClick={logout}>Logout</button>
 
+      <p>Sign In With Google To Continue</p>
       <button onClick={signInWithGoogle}>Sign In With Google</button>
     </div>
   );
