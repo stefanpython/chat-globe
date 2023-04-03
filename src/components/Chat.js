@@ -8,6 +8,7 @@ import {
   where,
   orderBy,
 } from "firebase/firestore";
+import { signOut } from "firebase/auth";
 import { auth, db } from "../config/firebase";
 import { uid } from "uid";
 
@@ -52,6 +53,15 @@ export const Chat = (props) => {
     setNewMessage("");
   };
 
+  // Logout
+  const logout = async () => {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="chat--container">
       <div className="chat--header">
@@ -59,7 +69,10 @@ export const Chat = (props) => {
       </div>
       <div>
         {messages.map((message) => (
-          <h1 key={message.id}>{message.text}</h1>
+          <div key={message.id}>
+            <span className="chat--username">{message.user}: </span>
+            {message.text}
+          </div>
         ))}
       </div>
       <form onSubmit={handleSubmit} className="new--message">
@@ -73,6 +86,8 @@ export const Chat = (props) => {
           Send
         </button>
       </form>
+
+      <button onClick={logout}>Logout</button>
     </div>
   );
 };

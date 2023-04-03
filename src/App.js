@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./App.css";
 import { Auth } from "./components/auth";
 import Cookies from "universal-cookie";
@@ -8,9 +8,16 @@ const cookies = new Cookies();
 
 function App() {
   const [isAuth, setIsAuth] = useState(cookies.get("auth-token"));
-  const [room, setRoom] = useState(null);
+  const [room, setRoom] = useState(cookies.get("chat-room"));
 
   const roomInputRef = useRef(null);
+
+  // Keep user in same room if page refresh using cookies
+  useEffect(() => {
+    if (room) {
+      cookies.set("chat-room", room);
+    }
+  }, [room]);
 
   if (!isAuth) {
     return (
