@@ -27,11 +27,17 @@ function App() {
     );
   }
 
+  const leaveRoom = () => {
+    setRoom(null);
+    cookies.set("chat-room", "");
+  };
+
   return (
     <div>
       {room ? (
         <div>
           <Chat room={room} />
+          <button onClick={leaveRoom}>Leave room</button>
         </div>
       ) : (
         <div className="room">

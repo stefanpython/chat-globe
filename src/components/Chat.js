@@ -54,13 +54,13 @@ export const Chat = (props) => {
   };
 
   // Logout
-  const logout = async () => {
-    try {
-      await signOut(auth);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // const logout = async () => {
+  //   try {
+  //     await signOut(auth);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   return (
     <div className="chat--container">
@@ -87,7 +87,7 @@ export const Chat = (props) => {
         </button>
       </form>
 
-      <button onClick={logout}>Logout</button>
+      {/* <button onClick={logout}>Logout</button> */}
     </div>
   );
 };
