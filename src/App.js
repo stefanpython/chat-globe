@@ -44,7 +44,9 @@ function App() {
       {room ? (
         <div>
           <Chat room={room} />
-          <button onClick={leaveRoom}>Leave room</button>
+          <button className="leave--room--button" onClick={leaveRoom}>
+            Leave room
+          </button>
         </div>
       ) : (
         <div className="room">

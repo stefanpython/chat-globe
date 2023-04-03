@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth"; // Import getAuth for all types login and GoogleAuthProvider for login with gmail
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage"; // Import for storing files on firebase
 
 const firebaseConfig = {
   apiKey: "AIzaSyBcMy5qIpuIeNLPmWpXv6Nbak3-mVLwhzo",
@@ -15,3 +16,4 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app); // Create variable and assign it with GoogleAuthProvider() for gmail login
 export const googleProvider = new GoogleAuthProvider(); // Add google gmail provider
 export const db = getFirestore(app); // Variable for database
+export const storage = getStorage(app); // Variable for storage

@@ -9,13 +9,20 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
-import { auth, db } from "../config/firebase";
+import { auth, db, storage } from "../config/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { uid } from "uid";
 
 export const Chat = (props) => {
   const { room } = props;
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileInputChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+  };
 
   const messageRef = collection(db, "messages"); // Reference which firestore database collection
 
@@ -39,28 +46,45 @@ export const Chat = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (newMessage === "") return;
+    if (newMessage === "" && !selectedFile) return;
 
-    // Create object for each message with multiple parameters and add it to collection
-    await addDoc(messageRef, {
+    // Upload the selected image to Firebase Storage
+    let imageUrl = null;
+    if (selectedFile) {
+      const storageRef = ref(storage, `images/${selectedFile.name + uid()}`);
+      await uploadBytes(storageRef, selectedFile);
+      imageUrl = await getDownloadURL(storageRef);
+    }
+
+    // Send the message and the image URL to Firebase Firestore
+    const messageData = {
       text: newMessage,
       created: serverTimestamp(),
       user: auth.currentUser.displayName,
       room: room,
       id: uid(),
-    });
+    };
+
+    if (imageUrl) {
+      messageData.imageUrl = imageUrl;
+    }
+
+    await addDoc(collection(db, "messages"), messageData);
 
     setNewMessage("");
+    setSelectedFile(null);
+
+    e.target.reset();
   };
 
   // Logout
-  // const logout = async () => {
-  //   try {
-  //     await signOut(auth);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
+  const logout = async () => {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="chat--container">
@@ -72,6 +96,17 @@ export const Chat = (props) => {
           <div key={message.id}>
             <span className="chat--username">{message.user}: </span>
             {message.text}
+            {message.imageUrl && (
+              <>
+                <br />
+                <img
+                  src={message.imageUrl}
+                  alt="Uploaded"
+                  style={{ maxWidth: 300 }}
+                  onLoad={() => window.scrollTo(0, document.body.scrollHeight)}
+                />
+              </>
+            )}
           </div>
         ))}
       </div>
@@ -82,12 +117,17 @@ export const Chat = (props) => {
           placeholder="Type your message here..."
           value={newMessage}
         />
+        <input
+          className="file--input"
+          type="file"
+          onChange={handleFileInputChange}
+        />
         <button type="submit" className="send--button">
           Send
         </button>
       </form>
 
-      {/* <button onClick={logout}>Logout</button> */}
+      <button onClick={logout}>Logout</button>
     </div>
   );
 };
