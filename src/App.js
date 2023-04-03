@@ -19,6 +19,13 @@ function App() {
     }
   }, [room]);
 
+  // Enter chat room from pressing enter on keyboard
+  const handleInputKeyDown = (event) => {
+    if (event.key === "Enter") {
+      setRoom(roomInputRef.current.value);
+    }
+  };
+
   if (!isAuth) {
     return (
       <div className="App">
@@ -42,7 +49,7 @@ function App() {
       ) : (
         <div className="room">
           <label>Enter Room Name:</label>
-          <input ref={roomInputRef} />
+          <input ref={roomInputRef} onKeyDown={handleInputKeyDown} />
           <button onClick={() => setRoom(roomInputRef.current.value)}>
             Enter Chat
           </button>
