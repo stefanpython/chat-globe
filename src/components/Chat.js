@@ -13,6 +13,9 @@ import { auth, db, storage } from "../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { uid } from "uid";
 import EmojiPicker from "emoji-picker-react";
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
 
 export const Chat = (props) => {
   const { room } = props;
@@ -30,6 +33,8 @@ export const Chat = (props) => {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
+
+  const [isAuth, setIsAuth] = useState(cookies.get("auth-token"));
 
   const messageRef = collection(db, "messages"); // Reference which firestore database collection
 
@@ -94,6 +99,8 @@ export const Chat = (props) => {
   const logout = async () => {
     try {
       await signOut(auth);
+      cookies.set("auth-token", "");
+      window.location.reload();
     } catch (err) {
       console.error(err);
     }
