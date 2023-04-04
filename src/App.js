@@ -9,6 +9,9 @@ const cookies = new Cookies();
 function App() {
   const [isAuth, setIsAuth] = useState(cookies.get("auth-token"));
   const [room, setRoom] = useState(cookies.get("chat-room"));
+  const [visitedRooms, setVisitedRooms] = useState(
+    cookies.get("visited-rooms") || []
+  );
 
   const roomInputRef = useRef(null);
 
@@ -16,6 +19,12 @@ function App() {
   useEffect(() => {
     if (room) {
       cookies.set("chat-room", room);
+      setVisitedRooms((prevVisitedRooms) => {
+        if (!prevVisitedRooms.includes(room)) {
+          return [...prevVisitedRooms, room];
+        }
+        return prevVisitedRooms;
+      });
     }
   }, [room]);
 
@@ -39,6 +48,10 @@ function App() {
     cookies.set("chat-room", "");
   };
 
+  const handleVisitedRoomClick = (roomName) => {
+    setRoom(roomName);
+  };
+
   return (
     <div>
       {room ? (
@@ -55,6 +68,18 @@ function App() {
           <button onClick={() => setRoom(roomInputRef.current.value)}>
             Enter Chat
           </button>
+          <div className="visited--rooms">
+            <h3>Visited Rooms:</h3>
+            {visitedRooms.map((visitedRoom) => (
+              <div
+                key={visitedRoom}
+                className="visited--room"
+                onClick={() => handleVisitedRoomClick(visitedRoom)}
+              >
+                {visitedRoom}
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
