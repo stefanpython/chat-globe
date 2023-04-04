@@ -28,6 +28,11 @@ function App() {
     }
   }, [room]);
 
+  // // Save visited rooms to cookies when it changes
+  // useEffect(() => {
+  //   cookies.set("visited-rooms", visitedRooms);
+  // }, [visitedRooms]);
+
   // Enter chat room from pressing enter on keyboard
   const handleInputKeyDown = (event) => {
     if (event.key === "Enter") {

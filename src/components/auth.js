@@ -6,8 +6,6 @@ import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
 export const Auth = (props) => {
-  console.log(auth?.currentUser?.email);
-
   // Sign in with google account
   const signInWithGoogle = async () => {
     try {

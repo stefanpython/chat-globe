@@ -34,8 +34,6 @@ export const Chat = (props) => {
     setSelectedFile(file);
   };
 
-  const [isAuth, setIsAuth] = useState(cookies.get("auth-token"));
-
   const messageRef = collection(db, "messages"); // Reference which firestore database collection
 
   // Listen for new messages with onSnapShoot()
@@ -100,6 +98,7 @@ export const Chat = (props) => {
     try {
       await signOut(auth);
       cookies.set("auth-token", "");
+      cookies.set("chat-room", "");
       window.location.reload();
     } catch (err) {
       console.error(err);
