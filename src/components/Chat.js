@@ -12,12 +12,19 @@ import { signOut } from "firebase/auth";
 import { auth, db, storage } from "../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { uid } from "uid";
+import EmojiPicker from "emoji-picker-react";
 
 export const Chat = (props) => {
   const { room } = props;
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
+
+  // File upload
   const [selectedFile, setSelectedFile] = useState(null);
+
+  // Emoji use
+  const [pickerVisible, setPickerVisible] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState("");
 
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
@@ -46,6 +53,7 @@ export const Chat = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Prevent user to send empty message
     if (newMessage === "" && !selectedFile) return;
 
     // Upload the selected image to Firebase Storage
@@ -65,6 +73,10 @@ export const Chat = (props) => {
       id: uid(),
     };
 
+    if (selectedEmoji) {
+      messageData.emoji = selectedEmoji;
+    }
+
     if (imageUrl) {
       messageData.imageUrl = imageUrl;
     }
@@ -73,6 +85,7 @@ export const Chat = (props) => {
 
     setNewMessage("");
     setSelectedFile(null);
+    setPickerVisible(false);
 
     e.target.reset();
   };
@@ -110,6 +123,16 @@ export const Chat = (props) => {
           </div>
         ))}
       </div>
+      <button onClick={() => setPickerVisible(!pickerVisible)}>😊</button>
+      {pickerVisible && (
+        <EmojiPicker
+          onEmojiClick={(emojiObject, event) => {
+            setNewMessage(newMessage + emojiObject.emoji);
+            setSelectedEmoji(emojiObject.emoji);
+          }}
+        />
+      )}
+
       <form onSubmit={handleSubmit} className="new--message">
         <input
           onChange={(e) => setNewMessage(e.target.value)}

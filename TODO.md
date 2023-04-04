@@ -1,4 +1,3 @@
--- Add function to upload images
 -- Add function to use emoticons
 -- Add function to remember visited rooms and display it in a click`able container
 -- Style application
