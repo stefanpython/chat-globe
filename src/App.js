@@ -3,6 +3,8 @@ import "./App.css";
 import { Auth } from "./components/auth";
 import Cookies from "universal-cookie";
 import { Chat } from "./components/Chat";
+import { signOut } from "firebase/auth";
+import { auth } from "./config/firebase";
 
 const cookies = new Cookies();
 
@@ -28,11 +30,6 @@ function App() {
     }
   }, [room]);
 
-  // // Save visited rooms to cookies when it changes
-  // useEffect(() => {
-  //   cookies.set("visited-rooms", visitedRooms);
-  // }, [visitedRooms]);
-
   // Enter chat room from pressing enter on keyboard
   const handleInputKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -57,6 +54,28 @@ function App() {
     setRoom(roomName);
   };
 
+  const handleVisitedRoomDelete = (roomName) => {
+    setVisitedRooms((prevVisitedRooms) =>
+      prevVisitedRooms.filter((visitedRoom) => visitedRoom !== roomName)
+    );
+    cookies.set(
+      "visited-rooms",
+      visitedRooms.filter((visitedRoom) => visitedRoom !== roomName)
+    );
+  };
+
+  // Logout
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      cookies.set("auth-token", "");
+      cookies.set("chat-room", "");
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div>
       {room ? (
@@ -73,18 +92,21 @@ function App() {
           <button onClick={() => setRoom(roomInputRef.current.value)}>
             Enter Chat
           </button>
+
           <div className="visited--rooms">
             <h3>Visited Rooms:</h3>
             {visitedRooms.map((visitedRoom) => (
-              <div
-                key={visitedRoom}
-                className="visited--room"
-                onClick={() => handleVisitedRoomClick(visitedRoom)}
-              >
-                {visitedRoom}
+              <div key={visitedRoom} className="visited--room">
+                <span onClick={() => handleVisitedRoomClick(visitedRoom)}>
+                  {visitedRoom}
+                </span>
+                <button onClick={() => handleVisitedRoomDelete(visitedRoom)}>
+                  Delete
+                </button>
               </div>
             ))}
           </div>
+          <button onClick={logout}>Logout</button>
         </div>
       )}
     </div>
