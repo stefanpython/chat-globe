@@ -30,6 +30,10 @@ function App() {
     }
   }, [room]);
 
+  useEffect(() => {
+    cookies.set("visited-rooms", visitedRooms);
+  }, [visitedRooms]);
+
   // Enter chat room from pressing enter on keyboard
   const handleInputKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -100,13 +104,18 @@ function App() {
                 <span onClick={() => handleVisitedRoomClick(visitedRoom)}>
                   {visitedRoom}
                 </span>
-                <button onClick={() => handleVisitedRoomDelete(visitedRoom)}>
+                <button
+                  className="delete--button"
+                  onClick={() => handleVisitedRoomDelete(visitedRoom)}
+                >
                   Delete
                 </button>
               </div>
             ))}
           </div>
-          <button onClick={logout}>Logout</button>
+          <button className="logout--button" onClick={logout}>
+            Logout
+          </button>
         </div>
       )}
     </div>
