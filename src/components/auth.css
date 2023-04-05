@@ -21,7 +21,7 @@
   width: 12em;
   padding: 2em;
   border-radius: 1em;
-  box-shadow: 5px 10px 21px grey;
+  box-shadow: 5px 10px 21px #b0ccf8;
 }
 
 .signin--button {

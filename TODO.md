@@ -1,4 +1,0 @@
--- Add function to remember visited rooms and display it in a click`able container
--- Style application
--- Add dark theme
--- Create button + to enter room and display the enter roomname

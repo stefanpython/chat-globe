@@ -59,9 +59,15 @@ function App() {
   };
 
   const handleVisitedRoomDelete = (roomName) => {
-    setVisitedRooms((prevVisitedRooms) =>
-      prevVisitedRooms.filter((visitedRoom) => visitedRoom !== roomName)
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete item?"
     );
+    if (confirmDelete) {
+      setVisitedRooms((prevVisitedRooms) =>
+        prevVisitedRooms.filter((visitedRoom) => visitedRoom !== roomName)
+      );
+    }
+
     cookies.set(
       "visited-rooms",
       visitedRooms.filter((visitedRoom) => visitedRoom !== roomName)
@@ -81,7 +87,7 @@ function App() {
   };
 
   return (
-    <div>
+    <>
       {room ? (
         <div>
           <Chat room={room} />
@@ -90,35 +96,51 @@ function App() {
           </button>
         </div>
       ) : (
-        <div className="room">
-          <label>Enter Room Name:</label>
-          <input ref={roomInputRef} onKeyDown={handleInputKeyDown} />
-          <button onClick={() => setRoom(roomInputRef.current.value)}>
-            Enter Chat
-          </button>
+        <div className="app--container">
+          <div className="app--content">
+            <div className="room--container">
+              <label>Enter Room Name:</label>
+              <input
+                className="room--input"
+                ref={roomInputRef}
+                onKeyDown={handleInputKeyDown}
+              />
+              <button
+                className="enter--button"
+                onClick={() => setRoom(roomInputRef.current.value)}
+              >
+                Enter Chat
+              </button>
 
-          <div className="visited--rooms">
-            <h3>Visited Rooms:</h3>
-            {visitedRooms.map((visitedRoom) => (
-              <div key={visitedRoom} className="visited--room">
-                <span onClick={() => handleVisitedRoomClick(visitedRoom)}>
-                  {visitedRoom}
-                </span>
-                <button
-                  className="delete--button"
-                  onClick={() => handleVisitedRoomDelete(visitedRoom)}
-                >
-                  Delete
-                </button>
+              <div className="visited--rooms">
+                <h3 className="visited--title">Active Rooms:</h3>
+                <hr />
+                {visitedRooms.map((visitedRoom) => (
+                  <div key={visitedRoom} className="visited--room">
+                    <span
+                      className="room--name"
+                      onClick={() => handleVisitedRoomClick(visitedRoom)}
+                    >
+                      {visitedRoom}
+                    </span>
+
+                    <button
+                      className="delete--button"
+                      onClick={() => handleVisitedRoomDelete(visitedRoom)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+              <button className="logout--button" onClick={logout}>
+                Logout
+              </button>
+            </div>
           </div>
-          <button className="logout--button" onClick={logout}>
-            Logout
-          </button>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

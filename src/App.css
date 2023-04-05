@@ -1,3 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@400;500&display=swap");
+
 .App {
   text-align: center;
+}
+
+.app--container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(251, 253, 255);
+  height: 100vh;
+  font-family: "Roboto Flex", sans-serif;
+}
+
+.app--content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid gainsboro;
+  padding: 2em;
+
+  background-color: white;
+  border-radius: 15px;
+}
+
+@media only screen and (max-width: 400px) {
+  .app--content {
+    margin-left: 3%;
+  }
+}
+
+.room--container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -20px;
+}
+
+.room--input {
+  border: 1.5px solid #4267b2;
+  height: 1.5em;
+  width: 10em;
+}
+
+.enter--button {
+  background-color: #4267b2;
+  border: none;
+  color: white;
+  height: 2.5em;
+  border-radius: 2px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+.logout--button {
+  background-color: #13898f;
+  color: white;
+  border: none;
+  height: 2em;
+  border-radius: 2px;
+  margin-top: 30px;
+  margin-bottom: -30px;
+}
+
+.delete--button {
+  background-color: #b23b3b;
+  color: white;
+  border: none;
+  height: 1.5em;
+  margin-bottom: 5px;
+}
+
+.visited--room {
+  display: flex;
+  justify-content: space-between;
+  gap: 100px;
+}
+
+.enter--button:active,
+.logout--button:active,
+.delete--button:active {
+  transform: translateY(3px);
+}
+
+label {
+  margin-bottom: 5px;
+  font-size: 17px;
+}
+
+.visited--title {
+  font-weight: 500;
+  margin-bottom: -1px;
+  text-align: center;
+}
+
+.room--name {
+  background-color: #fbb333;
+  height: 20px;
+  width: auto;
+  border-radius: 3px;
+  padding: 1px;
+  margin-bottom: 3px;
+}
+
+.room--name:hover,
+.delete--button:hover,
+.logout--button:hover {
+  transform: scale(1.1);
+  translate: 0.7s;
 }
