@@ -8,10 +8,8 @@ import {
   query,
   where,
   orderBy,
-  doc,
-  getDoc,
 } from "firebase/firestore";
-import { signOut } from "firebase/auth";
+
 import { auth, db, storage } from "../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { uid } from "uid";

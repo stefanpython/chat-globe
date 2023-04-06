@@ -110,7 +110,7 @@
   position: absolute;
   display: flex;
   align-items: center;
-  margin-left: 19.3em;
+  margin-left: 19.2em;
   margin-top: -50px;
   border: none;
   border-bottom-right-radius: 3em;
@@ -124,7 +124,7 @@
 
 @media only screen and (max-width: 500px) {
   .send--button {
-    margin-left: 18.8em;
+    margin-left: 18.7em;
   }
 }
 
