@@ -77,6 +77,10 @@
   flex-direction: column;
   margin-left: -40px;
   margin-top: 4em;
+  background-color: #075e54;
+  position: sticky;
+  bottom: 0;
+  z-index: 1; /* Optional */
 }
 
 .new--message--input {
@@ -87,7 +91,6 @@
   height: 3.5em;
   border: none;
   border-bottom-left-radius: 3em;
-
   padding-left: 50px;
   resize: none;
 }
@@ -112,7 +115,7 @@
   border: none;
   border-bottom-right-radius: 3em;
   border-top-right-radius: 3em;
-  height: 3.7em;
+  height: 3.77em;
   background-color: #10b4a1;
   color: white;
   cursor: pointer;
@@ -155,4 +158,11 @@ input[type="file"] {
 
 .chat--images {
   margin-left: 10px;
+}
+
+.chat--header {
+  position: sticky;
+  top: 0;
+  background-color: white; /* Optional */
+  z-index: 1; /* Optional */
 }

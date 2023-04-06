@@ -109,9 +109,6 @@ export const Chat = (props) => {
     <div className="chat--container">
       <div className="chat--header">
         <h1 className="chat--welcome">Welcome to: {room.toUpperCase()}</h1>
-        <p>
-          <span></span>
-        </p>
       </div>
       <div className="chat--messages">
         {messages.map((message) => (
