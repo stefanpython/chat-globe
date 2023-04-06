@@ -1,0 +1,2 @@
+-- show if user is online in chatroom
+-- browser notification when message is received

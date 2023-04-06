@@ -1,3 +1,4 @@
+import "./Chat.css";
 import { useEffect, useState } from "react";
 import {
   addDoc,
@@ -7,6 +8,8 @@ import {
   query,
   where,
   orderBy,
+  doc,
+  getDoc,
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { auth, db, storage } from "../config/firebase";
@@ -18,7 +21,7 @@ import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
 export const Chat = (props) => {
-  const { room } = props;
+  const { room, setRoom } = props;
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
@@ -29,12 +32,13 @@ export const Chat = (props) => {
   const [pickerVisible, setPickerVisible] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState("");
 
+  // Reference which firestore database collection
+  const messageRef = collection(db, "messages");
+
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
-
-  const messageRef = collection(db, "messages"); // Reference which firestore database collection
 
   // Listen for new messages with onSnapShoot()
   useEffect(() => {
@@ -43,6 +47,7 @@ export const Chat = (props) => {
       where("room", "==", room),
       orderBy("created", "asc")
     );
+
     const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
       let messages = [];
       snapshot.forEach((doc) => {
@@ -74,6 +79,8 @@ export const Chat = (props) => {
       user: auth.currentUser.displayName,
       room: room,
       id: uid(),
+      time: new Date().toLocaleTimeString(),
+      // status: !auth.currentUser.displayName === false ? "online" : "offline",
     };
 
     if (selectedEmoji) {
@@ -93,32 +100,41 @@ export const Chat = (props) => {
     e.target.reset();
   };
 
-  // Logout
-  const logout = async () => {
-    try {
-      await signOut(auth);
-      cookies.set("auth-token", "");
-      cookies.set("chat-room", "");
-      window.location.reload();
-    } catch (err) {
-      console.error(err);
-    }
+  const leaveRoom = () => {
+    setRoom(null);
+    cookies.set("chat-room", "");
   };
 
   return (
     <div className="chat--container">
       <div className="chat--header">
-        <h1>Welcome to: {room.toUpperCase()}</h1>
+        <h1 className="chat--welcome">Welcome to: {room.toUpperCase()}</h1>
+        <p>
+          <span></span>
+        </p>
       </div>
-      <div>
+      <div className="chat--messages">
         {messages.map((message) => (
-          <div key={message.id}>
-            <span className="chat--username">{message.user}: </span>
-            {message.text}
+          <div
+            className={
+              message.user === auth.currentUser.displayName
+                ? "chat--message-right"
+                : "chat--message-left"
+            }
+            key={uid()}
+          >
+            <span className="chat--username">
+              {message.user === auth.currentUser.displayName
+                ? "You"
+                : message.user}
+              :{" "}
+            </span>
+            <span className="chat--text">{message.text}</span>
             {message.imageUrl && (
               <>
                 <br />
                 <img
+                  className="chat--images"
                   src={message.imageUrl}
                   alt="Uploaded"
                   style={{ maxWidth: 300 }}
@@ -126,39 +142,53 @@ export const Chat = (props) => {
                 />
               </>
             )}
+            <span className="chat--time">{message.time}</span>
           </div>
         ))}
       </div>
-      <button onClick={() => setPickerVisible(!pickerVisible)}>😊</button>
-      {pickerVisible && (
-        <EmojiPicker
-          onEmojiClick={(emojiObject, event) => {
-            setNewMessage(newMessage + emojiObject.emoji);
-            setSelectedEmoji(emojiObject.emoji);
-          }}
-        />
-      )}
 
-      <form onSubmit={handleSubmit} className="new--message">
-        <input
-          onChange={(e) => setNewMessage(e.target.value)}
-          className="new--message--input"
-          placeholder="Type your message here..."
-          value={newMessage}
-        />
-        <input
-          className="file--input"
-          type="file"
-          onChange={handleFileInputChange}
-        />
-        <button type="submit" className="send--button">
-          Send
+      <div className="chat--input">
+        <form onSubmit={handleSubmit} className="new--message">
+          <button
+            className="emoji--button"
+            onClick={() => setPickerVisible(!pickerVisible)}
+          >
+            😊
+          </button>
+
+          {pickerVisible && (
+            <EmojiPicker
+              onEmojiClick={(emojiObject, event) => {
+                setNewMessage(newMessage + emojiObject.emoji);
+                setSelectedEmoji(emojiObject.emoji);
+              }}
+            />
+          )}
+          <textarea
+            onChange={(e) => setNewMessage(e.target.value)}
+            className="new--message--input"
+            placeholder="Type your message here..."
+            value={newMessage}
+          />
+          <label className="input--label" htmlFor="file--input">
+            <input
+              id="file--input"
+              className="file--input"
+              type="file"
+              onChange={handleFileInputChange}
+            />
+            Upload
+          </label>
+
+          <button type="submit" className="send--button">
+            Send
+          </button>
+        </form>
+
+        <button className="leave--room--button" onClick={leaveRoom}>
+          Leave room
         </button>
-      </form>
-
-      <button className="logout--button" onClick={logout}>
-        Logout
-      </button>
+      </div>
     </div>
   );
 };
