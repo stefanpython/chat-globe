@@ -9,4 +9,3 @@
 - Emoticon button using EmojiPicker 
 - And others
 
-## Check it out. Live demo [HERE](https://chatglobe-ac09d.web.app/)
